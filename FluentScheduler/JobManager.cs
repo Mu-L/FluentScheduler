@@ -91,11 +91,7 @@ public static class JobManager
     {
         return () =>
         {
-            var job = jobFactory();
-
-            if (job == null)
-                throw new InvalidOperationException("The given Func<IJob> returned null.");
-
+            var job = jobFactory() ?? throw new InvalidOperationException("The given Func<IJob> returned null.");
             try
             {
                 job.Execute();
