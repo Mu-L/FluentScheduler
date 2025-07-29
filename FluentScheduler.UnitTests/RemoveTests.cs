@@ -1,8 +1,10 @@
 ﻿namespace FluentScheduler.UnitTests
 {
     using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
     using Xunit;
-    using static System.Threading.Thread;
+    using static System.Threading.Tasks.Task;
     using static Xunit.Assert;
 
     public class RemoveTests
@@ -37,10 +39,10 @@
         }
 
         [Fact]
-        public void Should_Remove_LongRunning_Job_But_Keep_Running()
+        public async Task Should_Remove_LongRunning_Job_But_Keep_Running()
         {
             // Act
-            var schedule = new Schedule(() => Sleep(100));
+            var schedule = new Schedule(() => Thread.Sleep(100));
             schedule.WithName("remove long running job").ToRunNow().AndEvery(2).Seconds();
             schedule.Execute();
 
@@ -53,7 +55,7 @@
             // Assert
             Null(JobManager.GetSchedule("remove long running job"));
             Contains(JobManager.RunningSchedules, s => s.Name == "remove long running job");
-            Sleep(2000);
+            await Delay(2000);
             DoesNotContain(JobManager.RunningSchedules, s => s.Name == "remove long running job");
         }
     }

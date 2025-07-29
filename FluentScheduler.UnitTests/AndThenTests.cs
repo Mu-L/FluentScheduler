@@ -3,13 +3,14 @@ namespace FluentScheduler.UnitTests
     using Xunit;
     using System;
     using System.Linq;
-    using static System.Threading.Thread;
+    using System.Threading.Tasks;
+    using static System.Threading.Tasks.Task;
     using static Xunit.Assert;
 
     public class AndThenTests
     {
         [Fact]
-        public void Should_Be_Able_To_Schedule_Multiple_Jobs()
+        public async Task Should_Be_Able_To_Schedule_Multiple_Jobs()
         {
             // Arrange
             var job1 = false;
@@ -19,7 +20,7 @@ namespace FluentScheduler.UnitTests
             var schedule = new Schedule(() => job1 = true).AndThen(() => job2 = true);
             schedule.Execute();
             while (JobManager.RunningSchedules.Any())
-                Sleep(1);
+                await Delay(1);
 
             // Assert
             True(job1);
@@ -27,7 +28,7 @@ namespace FluentScheduler.UnitTests
         }
 
         [Fact]
-        public void Should_Be_Able_To_Schedule_Multiple_Simple_Methods()
+        public async Task Should_Be_Able_To_Schedule_Multiple_Simple_Methods()
         {
             // Arrange
             var job1 = false;
@@ -37,7 +38,7 @@ namespace FluentScheduler.UnitTests
             var schedule = new Schedule(() => job1 = true).AndThen(() => job2 = true);
             schedule.Execute();
             while (JobManager.RunningSchedules.Any())
-                Sleep(1);
+                await Delay(1);
 
             // Assert
             True(job1);
@@ -45,21 +46,21 @@ namespace FluentScheduler.UnitTests
         }
 
         [Fact]
-        public void Should_Execute_Jobs_In_Order()
+        public async Task Should_Execute_Jobs_In_Order()
         {
             // Arrange
             var job1 = DateTime.MinValue;
             var job2 = DateTime.MinValue;
 
             // Act
-            var schedule = new Schedule(() =>
+            var schedule = new Schedule(async () =>
             {
                 job1 = DateTime.Now;
-                Sleep(1);
+                await Delay(1);
             }).AndThen(() => job2 = DateTime.Now);
             schedule.Execute();
             while (JobManager.RunningSchedules.Any())
-                Sleep(1);
+                await Delay(1);
 
             // Assert
             True(job1.Ticks < job2.Ticks);
