@@ -1,4 +1,4 @@
-﻿namespace FluentScheduler;
+namespace FluentScheduler;
 
 using System;
 using System.Collections;
@@ -41,8 +41,7 @@ public class Registry
     /// <param name="job">Job to run.</param>
     public Schedule Schedule(Action job)
     {
-        if (job == null)
-            throw new ArgumentNullException("job");
+        ArgumentNullException.ThrowIfNull(job);
 
         return Schedule(job, null);
     }
@@ -53,8 +52,7 @@ public class Registry
     /// <param name="job">Job to run.</param>
     public Schedule Schedule(IJob job)
     {
-        if (job == null)
-            throw new ArgumentNullException("job");
+        ArgumentNullException.ThrowIfNull(job);
 
         return Schedule(JobManager.GetJobAction(job), null);
     }
@@ -74,8 +72,7 @@ public class Registry
     /// <param name="job">Factory method creating a IJob instance to run.</param>
     public Schedule Schedule(Func<IJob> job)
     {
-        if (job == null)
-            throw new ArgumentNullException("job");
+        ArgumentNullException.ThrowIfNull(job);
 
         return Schedule(JobManager.GetJobAction(job), null);
     }

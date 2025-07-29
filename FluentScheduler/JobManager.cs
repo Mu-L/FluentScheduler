@@ -1,4 +1,4 @@
-﻿namespace FluentScheduler;
+namespace FluentScheduler;
 
 using System;
 using System.Collections.Generic;
@@ -154,8 +154,7 @@ public static class JobManager
     /// <param name="registries">Registries of jobs to run</param>
     public static void Initialize(params Registry[] registries)
     {
-        if (registries == null)
-            throw new ArgumentNullException("registries");
+        ArgumentNullException.ThrowIfNull(registries);
 
         CalculateNextRun(registries.SelectMany(r => r.Schedules)).ToList().ForEach(RunJob);
         Start();
@@ -251,11 +250,8 @@ public static class JobManager
     /// <param name="schedule">Job schedule to add.</param>
     public static void AddJob(Action job, Action<Schedule> schedule)
     {
-        if (job == null)
-            throw new ArgumentNullException("job");
-
-        if (schedule == null)
-            throw new ArgumentNullException("schedule");
+        ArgumentNullException.ThrowIfNull(job);
+        ArgumentNullException.ThrowIfNull(schedule);
 
         AddJob(schedule, new Schedule(job));
     }
@@ -267,11 +263,8 @@ public static class JobManager
     /// <param name="schedule">Job schedule to add.</param>
     public static void AddJob(IJob job, Action<Schedule> schedule)
     {
-        if (job == null)
-            throw new ArgumentNullException("job");
-
-        if (schedule == null)
-            throw new ArgumentNullException("schedule");
+        ArgumentNullException.ThrowIfNull(job);
+        ArgumentNullException.ThrowIfNull(schedule);
 
         AddJob(schedule, new Schedule(JobManager.GetJobAction(job)));
     }
@@ -283,8 +276,7 @@ public static class JobManager
     /// <param name="schedule">Job schedule to add.</param>
     public static void AddJob<T>(Action<Schedule> schedule) where T : IJob
     {
-        if (schedule == null)
-            throw new ArgumentNullException("schedule");
+        ArgumentNullException.ThrowIfNull(schedule);
 
         AddJob(schedule, new Schedule(JobManager.GetJobAction<T>()) { Name = typeof(T).Name });
     }

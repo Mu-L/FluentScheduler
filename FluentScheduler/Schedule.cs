@@ -1,4 +1,4 @@
-﻿namespace FluentScheduler;
+namespace FluentScheduler;
 
 using System;
 using System.Collections.Generic;
@@ -71,8 +71,7 @@ public class Schedule
     /// <param name="job">Job to run.</param>
     public Schedule AndThen(Action job)
     {
-        if (job == null)
-            throw new ArgumentNullException("job");
+        ArgumentNullException.ThrowIfNull(job);
 
         Jobs.Add(job);
         return this;
@@ -84,8 +83,7 @@ public class Schedule
     /// <param name="job">Job to run.</param>
     public Schedule AndThen(IJob job)
     {
-        if (job == null)
-            throw new ArgumentNullException("job");
+        ArgumentNullException.ThrowIfNull(job);
 
         Jobs.Add(JobManager.GetJobAction(job));
         return this;
@@ -97,8 +95,7 @@ public class Schedule
     /// <param name="job">Job to run.</param>
     public Schedule AndThen(Func<IJob> job)
     {
-        if (job == null)
-            throw new ArgumentNullException("job");
+        ArgumentNullException.ThrowIfNull(job);
 
         Jobs.Add(JobManager.GetJobAction(job));
         return this;
