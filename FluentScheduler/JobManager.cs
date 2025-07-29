@@ -14,7 +14,7 @@ public static class JobManager
 {
     #region Internal fields
 
-    private const uint _maxTimerInterval = (uint)0xfffffffe;
+    private const uint _maxTimerInterval = 0xfffffffe;
 
     private static bool _useUtc = false;
 
