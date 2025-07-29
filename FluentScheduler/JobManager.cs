@@ -177,7 +177,7 @@ public static class JobManager
     {
         Stop();
 
-        var tasks = new Task[0];
+        var tasks = Array.Empty<Task>();
 
         // Even though Stop() was just called, a scheduling may be happening right now, that's why the loop.
         // Simply waiting for the tasks inside the lock causes a deadlock (a task may try to remove itself from
