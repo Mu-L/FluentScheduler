@@ -8,7 +8,7 @@ using static Serilog.RollingInterval;
 
 internal static class Program
 {
-    static void Main()
+    private static void Main()
     {
         InitializeLogger();
         ListenForStart();
