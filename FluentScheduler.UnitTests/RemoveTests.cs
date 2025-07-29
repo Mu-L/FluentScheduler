@@ -2,7 +2,6 @@
 
 namespace FluentScheduler.UnitTests;
 
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -37,7 +36,7 @@ public class RemoveTests
         JobManager.RemoveAllJobs();
 
         // Assert
-        True(JobManager.AllSchedules.Count() == 0);
+        Empty(JobManager.AllSchedules);
     }
 
     [Fact]
