@@ -253,7 +253,7 @@ public static class JobManager
         ArgumentNullException.ThrowIfNull(job);
         ArgumentNullException.ThrowIfNull(schedule);
 
-        AddJob(schedule, new Schedule(JobManager.GetJobAction(job)));
+        AddJob(schedule, new Schedule(GetJobAction(job)));
     }
 
     /// <summary>
@@ -265,7 +265,7 @@ public static class JobManager
     {
         ArgumentNullException.ThrowIfNull(schedule);
 
-        AddJob(schedule, new Schedule(JobManager.GetJobAction<T>()) { Name = typeof(T).Name });
+        AddJob(schedule, new Schedule(GetJobAction<T>()) { Name = typeof(T).Name });
     }
 
     private static void AddJob(Action<Schedule> jobSchedule, Schedule schedule)
