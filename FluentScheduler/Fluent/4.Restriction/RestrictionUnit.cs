@@ -3,6 +3,7 @@ namespace FluentScheduler;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 
 /// <summary>
 /// Restricts when the schedule should run
@@ -52,7 +53,9 @@ public class RestrictionUnit
         var allDays = (IEnumerable<DayOfWeek>)Enum.GetValues(typeof(DayOfWeek));
 
         if (allDays.All(day => exceptionalDays.Contains(day)))
-            throw new ArgumentException($"\"{nameof(exceptionalDays)}\" cannot contain all days of week.");
+            throw new ArgumentException(
+                "The given exceptional days must not contain all days of the week.", nameof(exceptionalDays)
+            );
 
         _calculator.PeriodCalculations.Add(last =>
         {

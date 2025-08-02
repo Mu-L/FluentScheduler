@@ -17,8 +17,7 @@ public class RunSpecifier
     /// <param name="interval">Interval (without unit) to wait</param>
     public PeriodDurationSet Every(int interval)
     {
-        if (interval <= 0)
-            throw new ArgumentOutOfRangeException($"\"{nameof(interval)}\" should be positive.");
+        ArgumentOutOfRangeException.ThrowIfNegative(interval);
 
         return new PeriodDurationSet(interval, _calculator);
     }
@@ -50,10 +49,10 @@ public class RunSpecifier
     /// <param name="time">Time to run the job</param>
     public void Every(TimeSpan time)
     {
-        var timeOfDay = new TimeSpan(time.Hours, time.Minutes, time.Seconds);
+        if (time < TimeSpan.Zero)
+            throw new ArgumentOutOfRangeException(nameof(time), time, "The given time must be a non-negative value.");
 
-        if (timeOfDay < TimeSpan.Zero)
-            throw new ArgumentOutOfRangeException($"\"{nameof(time)}\" should be positive.");
+        var timeOfDay = new TimeSpan(time.Hours, time.Minutes, time.Seconds);
 
         _calculator.PeriodCalculations.Add(last => last.Add(timeOfDay));
     }
@@ -84,11 +83,11 @@ public class RunSpecifier
     /// <param name="minutes">The minutes (0 to 59)</param>
     public OnceSet OnceAt(int hours, int minutes)
     {
-        if (hours < 0 || hours > 23)
-            throw new ArgumentOutOfRangeException($"\"{nameof(hours)}\" should be in the 0 to 23 range.");
+        ArgumentOutOfRangeException.ThrowIfNegative(hours);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(hours, 23);
 
-        if (minutes < 0 || minutes > 59)
-            throw new ArgumentOutOfRangeException($"\"{nameof(minutes)}\" should be in the 0 to 59 range.");
+        ArgumentOutOfRangeException.ThrowIfNegative(minutes);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(minutes, 59);
 
         OnceAt(new TimeSpan(hours, minutes, 0));
         return new OnceSet(_calculator);
@@ -127,8 +126,7 @@ public class RunSpecifier
     /// <param name="delay">Delay (without unit) to wait</param>
     public OnceDurationSet OnceIn(int delay)
     {
-        if (delay <= 0)
-            throw new ArgumentOutOfRangeException($"\"{nameof(delay)}\" should be positive.");
+        ArgumentOutOfRangeException.ThrowIfNegative(delay);
 
         _calculator.OnceCalculation = last => last;
         return new OnceDurationSet(delay, _calculator);
@@ -141,7 +139,9 @@ public class RunSpecifier
     public OnceSet OnceIn(TimeSpan delay)
     {
         if (delay < TimeSpan.Zero)
-            throw new ArgumentOutOfRangeException($"\"{nameof(delay)}\" should be positive.");
+            throw new ArgumentOutOfRangeException(
+                nameof(delay), delay, "The given delay must be a non-negative value."
+            );
 
         _calculator.OnceCalculation = last => last.Add(delay);
         return new OnceSet(_calculator);

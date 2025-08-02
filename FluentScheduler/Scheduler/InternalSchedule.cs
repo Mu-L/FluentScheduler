@@ -46,7 +46,7 @@ internal class InternalSchedule
     internal void ShouldNotBeRunning()
     {
         if (Running())
-            throw new InvalidOperationException("You cannot change the scheduling of a running schedule.");
+            throw new InvalidOperationException("The scheduling cannot not be changed while the schedule is running.");
     }
 
     internal bool Running()
@@ -72,8 +72,8 @@ internal class InternalSchedule
 
     internal void Stop(bool block, int? timeout = null)
     {
-        if (timeout.HasValue && timeout < 0)
-            throw new ArgumentOutOfRangeException($"\"{nameof(timeout)}\" should be positive.");
+        if (timeout.HasValue)
+            ArgumentOutOfRangeException.ThrowIfNegative(timeout.Value);
 
         if (!Running())
             return;

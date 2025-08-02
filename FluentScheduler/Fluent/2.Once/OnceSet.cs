@@ -17,8 +17,7 @@ public class OnceSet
     /// <param name="interval">Interval (without unit) to wait</param>
     public PeriodDurationSet AndEvery(int interval)
     {
-        if (interval <= 0)
-            throw new ArgumentOutOfRangeException($"\"{nameof(interval)}\" should be positive.");
+        ArgumentOutOfRangeException.ThrowIfNegative(interval);
 
         return new PeriodDurationSet(interval, _calculator);
     }

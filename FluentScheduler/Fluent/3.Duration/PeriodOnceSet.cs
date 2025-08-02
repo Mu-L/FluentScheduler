@@ -18,11 +18,12 @@ public class PeriodOnceSet
     /// <param name="minute">The minutes (0 through 59).</param>
     public void At(int hour, int minute)
     {
-        if (hour is < 0 or > 23)
-            throw new ArgumentOutOfRangeException($"\"{nameof(hour)}\" should be in the 0 to 23 range.");
 
-        if (minute is < 0 or > 59)
-            throw new ArgumentOutOfRangeException($"\"{nameof(minute)}\" should be in the 0 to 59 range.");
+        ArgumentOutOfRangeException.ThrowIfNegative(hour);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(hour, 23);
+
+        ArgumentOutOfRangeException.ThrowIfNegative(minute);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(minute, 59);
 
         _calculator.PeriodCalculations.Add(last => new DateTime(last.Year, last.Month, last.Day, hour, minute, 0));
     }
