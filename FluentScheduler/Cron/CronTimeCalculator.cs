@@ -5,7 +5,7 @@ using System;
 
 internal class CronTimeCalculator : ITimeCalculator
 {
-    private CrontabSchedule _calculator;
+    private readonly CrontabSchedule _calculator;
 
     public void UseUtc() => ((ITimeCalculator)this).Now = () => DateTime.UtcNow;
 
