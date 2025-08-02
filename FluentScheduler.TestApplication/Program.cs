@@ -5,7 +5,7 @@ using System;
 using static Serilog.Log;
 using static System.Threading.Thread;
 
-public static class Program
+internal static class Program
 {
     static void Main(string[] args)
     {
