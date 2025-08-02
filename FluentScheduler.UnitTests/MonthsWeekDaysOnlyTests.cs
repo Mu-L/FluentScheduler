@@ -26,7 +26,6 @@ public class MonthsWeekDaysOnlyTests
         Equal(DayOfWeek.Monday, actual.DayOfWeek);
     }
 
-        
     [Fact]
     public void Should_Pick_Monday_If_Now_Is_Sunday()
     {
@@ -69,7 +68,7 @@ public class MonthsWeekDaysOnlyTests
     {
         // Arrange
         var runHour = 3;
-        var input = new DateTime(2016, 8, 4, runHour+1, 15, 0);
+        var input = new DateTime(2016, 8, 4, runHour + 1, 15, 0);
         var expected = new DateTime(2016, 9, 5, 3, 15, 0);
 
         // Act
