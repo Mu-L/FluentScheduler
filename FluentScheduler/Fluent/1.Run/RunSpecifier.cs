@@ -79,17 +79,17 @@ public class RunSpecifier
     /// <summary>
     /// Runs the job once at the given time time of day.
     /// </summary>
-    /// <param name="hours">The hours (0 to 23)</param>
-    /// <param name="minutes">The minutes (0 to 59)</param>
-    public OnceSet OnceAt(int hours, int minutes)
+    /// <param name="hour">The hour (0 to 23)</param>
+    /// <param name="minute">The minute (0 to 59)</param>
+    public OnceSet OnceAt(int hour, int minute)
     {
-        ArgumentOutOfRangeException.ThrowIfNegative(hours);
-        ArgumentOutOfRangeException.ThrowIfGreaterThan(hours, 23);
+        ArgumentOutOfRangeException.ThrowIfNegative(hour);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(hour, 23);
 
-        ArgumentOutOfRangeException.ThrowIfNegative(minutes);
-        ArgumentOutOfRangeException.ThrowIfGreaterThan(minutes, 59);
+        ArgumentOutOfRangeException.ThrowIfNegative(minute);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(minute, 59);
 
-        OnceAt(new TimeSpan(hours, minutes, 0));
+        OnceAt(new TimeSpan(hour, minute, 0));
         return new OnceSet(_calculator);
     }
 

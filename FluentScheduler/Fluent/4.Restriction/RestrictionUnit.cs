@@ -17,8 +17,8 @@ public class RestrictionUnit
     /// <summary>
     /// Runs the job at the given time of day (military format).
     /// </summary>
-    /// <param name="hour">The hours (0 through 23).</param>
-    /// <param name="minute">The minutes (0 through 59).</param>
+    /// <param name="hour">The hour (0 through 23).</param>
+    /// <param name="minute">The minute (0 through 59).</param>
     public void At(int hour, int minute) => new PeriodOnceSet(_calculator).At(hour, minute);
 
     /// <summary>
