@@ -65,17 +65,11 @@ internal static class DateTimeExtensions
         return current;
     }
 
-    internal static bool IsWeekday(this DateTime current)
+    internal static bool IsWeekday(this DateTime current) => current.DayOfWeek switch
     {
-        switch (current.DayOfWeek)
-        {
-            case DayOfWeek.Saturday:
-            case DayOfWeek.Sunday:
-                return false;
-            default:
-                return true;
-        }
-    }
+        DayOfWeek.Saturday or DayOfWeek.Sunday => false,
+        _ => true,
+    };
 
     internal static DateTime ClearMinutesAndSeconds(this DateTime current)
     {
@@ -84,19 +78,12 @@ internal static class DateTimeExtensions
             .AddMilliseconds(-1 * current.Millisecond);
     }
 
-    internal static DateTime ToWeek(this DateTime current, Week week)
+    internal static DateTime ToWeek(this DateTime current, Week week) => week switch
     {
-        switch (week)
-        {
-            case Week.Second:
-                return current.First().AddDays(7);
-            case Week.Third:
-                return current.First().AddDays(14);
-            case Week.Fourth:
-                return current.First().AddDays(21);
-            case Week.Last:
-                return current.Last().AddDays(-7);
-        }
-        return current.First();
-    }
+        Week.Second => current.First().AddDays(7),
+        Week.Third => current.First().AddDays(14),
+        Week.Fourth => current.First().AddDays(21),
+        Week.Last => current.Last().AddDays(-7),
+        _ => current.First(),
+    };
 }
