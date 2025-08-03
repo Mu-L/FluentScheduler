@@ -249,7 +249,7 @@ public class Schedule
 
         lock (Internal.RunningLock)
         {
-            Internal.Stop(true, timeout.Milliseconds);
+            Internal.Stop(true, (int)timeout.TotalMilliseconds);
         }
     }
 }
