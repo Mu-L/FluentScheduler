@@ -101,6 +101,8 @@ internal class InternalSchedule
 
     [SuppressMessage("Design", "CA1031", Justification = "It's OK to catch a general exception here because it comes " +
         "from user code and not from the library itself.")]
+    [SuppressMessage("Reliability", "CA2016", Justification = "The cancellation token is not being passed forward to " +
+        "ContinueWith precisely to avoid a TaskCancelledException.")]
     private async Task Run(CancellationToken token)
     {
         // checking if it's supposed to run
