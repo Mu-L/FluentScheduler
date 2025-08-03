@@ -18,7 +18,6 @@ public class PeriodOnceSet
     /// <param name="minute">The minute (0 through 59).</param>
     public void At(int hour, int minute)
     {
-
         ArgumentOutOfRangeException.ThrowIfNegative(hour);
         ArgumentOutOfRangeException.ThrowIfGreaterThan(hour, 23);
 
@@ -34,6 +33,8 @@ public class PeriodOnceSet
     /// <param name="timeCollection">Time of day.</param>
     public void At(params TimeSpan[] timeCollection)
     {
+        ArgumentNullException.ThrowIfNull(timeCollection);
+
         foreach (var time in timeCollection)
         {
             if (time >= ((ITimeCalculator)_calculator).Now().TimeOfDay)
