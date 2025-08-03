@@ -28,6 +28,8 @@ public class OnceSet
     /// <param name="day">Day to run the job</param>
     public RestrictionUnit AndEvery(DayOfWeek day)
     {
+        ValidationHelper.ThrowIfNotDefinedInEnum(day);
+
         _calculator.PeriodCalculations.Add(last =>
         {
             if (last.DayOfWeek != day)

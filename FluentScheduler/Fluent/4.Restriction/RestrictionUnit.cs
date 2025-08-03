@@ -48,6 +48,8 @@ public class RestrictionUnit
     /// <param name="exceptionalDays">Days to exclude.</param>
     public PeriodOnceSet Except(params DayOfWeek[] exceptionalDays)
     {
+        ValidationHelper.ThrowIfNotDefinedInEnum(exceptionalDays);
+
         var allDays = Enum.GetValues<DayOfWeek>();
 
         if (allDays.All(day => exceptionalDays.Contains(day)))
@@ -55,13 +57,15 @@ public class RestrictionUnit
                 "The given exceptional days must not contain all days of the week.", nameof(exceptionalDays)
             );
 
-        _calculator.PeriodCalculations.Add(last =>
-        {
-            while (exceptionalDays.Contains(last.DayOfWeek))
-                last = last.AddDays(1);
+        _calculator.PeriodCalculations.Add(
+            last =>
+            {
+                while (exceptionalDays.Contains(last.DayOfWeek))
+                    last = last.AddDays(1);
 
-            return last;
-        });
+                return last;
+            }
+        );
 
         return new PeriodOnceSet(_calculator);
     }

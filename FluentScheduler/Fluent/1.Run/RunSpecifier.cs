@@ -28,6 +28,8 @@ public class RunSpecifier
     /// <param name="day">Day to run the job</param>
     public RestrictionUnit Every(DayOfWeek day)
     {
+        ValidationHelper.ThrowIfNotDefinedInEnum(day);
+
         _calculator.PeriodCalculations.Add(last =>
         {
             var daysToNext = day - last.DayOfWeek;
@@ -49,11 +51,9 @@ public class RunSpecifier
     /// <param name="time">Time to run the job</param>
     public void Every(TimeSpan time)
     {
-        if (time < TimeSpan.Zero)
-            throw new ArgumentOutOfRangeException(nameof(time), time, "The given time must be a non-negative value.");
+        ValidationHelper.ThrowIfNegative(time);
 
         var timeOfDay = new TimeSpan(time.Hours, time.Minutes, time.Seconds);
-
         _calculator.PeriodCalculations.Add(last => last.Add(timeOfDay));
     }
 
@@ -83,11 +83,7 @@ public class RunSpecifier
     /// <param name="minute">The minute (0 to 59)</param>
     public OnceSet OnceAt(int hour, int minute)
     {
-        ArgumentOutOfRangeException.ThrowIfNegative(hour);
-        ArgumentOutOfRangeException.ThrowIfGreaterThan(hour, 23);
-
-        ArgumentOutOfRangeException.ThrowIfNegative(minute);
-        ArgumentOutOfRangeException.ThrowIfGreaterThan(minute, 59);
+        ValidationHelper.ThrowIfOutOfMilitaryTimeRange(hour, minute);
 
         OnceAt(new TimeSpan(hour, minute, 0));
         return new OnceSet(_calculator);
@@ -99,6 +95,8 @@ public class RunSpecifier
     /// <param name="timeOfDay">Time of the day to run</param>
     public OnceSet OnceAt(TimeSpan timeOfDay)
     {
+        ValidationHelper.ThrowIfOutOfMilitaryTimeRange(timeOfDay);
+
         timeOfDay = new TimeSpan(timeOfDay.Hours, timeOfDay.Minutes, timeOfDay.Seconds);
 
         _calculator.OnceCalculation = last =>
@@ -138,10 +136,7 @@ public class RunSpecifier
     /// <param name="delay">Delay to wait</param>
     public OnceSet OnceIn(TimeSpan delay)
     {
-        if (delay < TimeSpan.Zero)
-            throw new ArgumentOutOfRangeException(
-                nameof(delay), delay, "The given delay must be a non-negative value."
-            );
+        ValidationHelper.ThrowIfNegative(delay);
 
         _calculator.OnceCalculation = last => last.Add(delay);
         return new OnceSet(_calculator);

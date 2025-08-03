@@ -18,11 +18,7 @@ public class PeriodOnceSet
     /// <param name="minute">The minute (0 through 59).</param>
     public void At(int hour, int minute)
     {
-        ArgumentOutOfRangeException.ThrowIfNegative(hour);
-        ArgumentOutOfRangeException.ThrowIfGreaterThan(hour, 23);
-
-        ArgumentOutOfRangeException.ThrowIfNegative(minute);
-        ArgumentOutOfRangeException.ThrowIfGreaterThan(minute, 59);
+        ValidationHelper.ThrowIfOutOfMilitaryTimeRange(hour, minute);
 
         _calculator.PeriodCalculations.Add(last => new DateTime(last.Year, last.Month, last.Day, hour, minute, 0));
     }
@@ -33,7 +29,7 @@ public class PeriodOnceSet
     /// <param name="timeCollection">Time of day.</param>
     public void At(params TimeSpan[] timeCollection)
     {
-        ArgumentNullException.ThrowIfNull(timeCollection);
+        ValidationHelper.ThrowIfOutOfMilitaryTimeRange(timeCollection);
 
         foreach (var time in timeCollection)
         {
@@ -65,7 +61,11 @@ public class PeriodOnceSet
     /// <param name="to">Time of the day to delimitade the period end.</param>
     public void Between(TimeSpan from, TimeSpan to)
     {
-        _calculator.PeriodCalculations.Add(last =>
+        if (from == to)
+            throw new ArgumentException($"The parameters '{nameof(from)}' and '{nameof(to)}' must not be equal.");
+
+        _calculator.PeriodCalculations.Add(
+            last =>
             {
                 var now = ((ITimeCalculator)_calculator).Now();
                 var lastTime = last.TimeOfDay;

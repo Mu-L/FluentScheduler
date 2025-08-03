@@ -36,7 +36,6 @@ public class PeriodDurationSet
     public RestrictionUnit Days()
     {
         _calculator.PeriodCalculations.Add(last => last.AddDays(_duration));
-
         return new RestrictionUnit(_calculator);
     }
 

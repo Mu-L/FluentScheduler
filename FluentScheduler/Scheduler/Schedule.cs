@@ -9,51 +9,85 @@ using System.Threading.Tasks;
 /// </summary>
 public class Schedule
 {
-    internal InternalSchedule Internal { get; private set; }
-
-    /// <summary>
-    /// Creates a new schedule for the given job.
-    /// </summary>
-    /// <param name="job">Job to be scheduled</param>
-    /// <param name="cronExpression">The scheduling as a cron expression</param>
-    public Schedule(Action job, string cronExpression) : this(() => MakeAsync(job), cronExpression) { }
+    internal readonly InternalSchedule Internal;
 
     /// <summary>
     /// Creates a new schedule for the given job.
     /// </summary>
     /// <param name="job">Job to be scheduled</param>
     /// <param name="specifier">The scheduling as a fluent call</param>
-    public Schedule(Action job, Action<RunSpecifier> specifier) : this(() => MakeAsync(job), specifier) { }
+    public Schedule(Action job, Action<RunSpecifier> specifier)
+    {
+        ArgumentNullException.ThrowIfNull(job);
+        ArgumentNullException.ThrowIfNull(specifier);
 
-    /// <summary>
-    /// Creates a new schedule for the given job.
-    /// </summary>
-    /// <param name="job">Job to be scheduled</param>
-    /// <param name="cronExpression">The scheduling as a cron expression</param>
-    public Schedule(Func<Task> job, string cronExpression) : this((token) => job(), cronExpression) { }
-
-    /// <summary>
-    /// Creates a new schedule for the given job.
-    /// </summary>
-    /// <param name="job">Job to be scheduled</param>
-    /// <param name="specifier">The scheduling as a fluent call</param>
-    public Schedule(Func<Task> job, Action<RunSpecifier> specifier) : this((token) => job(), specifier) { }
-
-    /// <summary>
-    /// Creates a new schedule for the given job.
-    /// </summary>
-    /// <param name="job">Job to be scheduled</param>
-    /// <param name="cronExpression">The scheduling as a cron expression</param>
-    public Schedule(Func<CancellationToken, Task> job, string cronExpression) =>
-        Internal = new InternalSchedule(job, new CronTimeCalculator(cronExpression));
+        Internal = new InternalSchedule(_ => MakeAsync(job), new FluentTimeCalculator(specifier));
+    }
 
     /// <summary>
     /// Creates a new schedule for the given job.
     /// </summary>
     /// <param name="job">Job to be scheduled</param>
     /// <param name="specifier">The scheduling as a fluent call</param>
-    public Schedule(Func<CancellationToken, Task> job, Action<RunSpecifier> specifier) =>
+    public Schedule(Func<Task> job, Action<RunSpecifier> specifier)
+    {
+        ArgumentNullException.ThrowIfNull(job);
+        ArgumentNullException.ThrowIfNull(specifier);
+
+        Internal = new InternalSchedule(_ => job(), new FluentTimeCalculator(specifier));
+    }
+
+    /// <summary>
+    /// Creates a new schedule for the given job.
+    /// </summary>
+    /// <param name="job">Job to be scheduled</param>
+    /// <param name="specifier">The scheduling as a fluent call</param>
+    public Schedule(Func<CancellationToken, Task> job, Action<RunSpecifier> specifier)
+    {
+        ArgumentNullException.ThrowIfNull(job);
+        ArgumentNullException.ThrowIfNull(specifier);
+
         Internal = new InternalSchedule(job, new FluentTimeCalculator(specifier));
+    }
+
+    /// <summary>
+    /// Creates a new schedule for the given job.
+    /// </summary>
+    /// <param name="job">Job to be scheduled</param>
+    /// <param name="cronExpression">The scheduling as a cron expression</param>
+    public Schedule(Action job, string cronExpression)
+    {
+        ArgumentNullException.ThrowIfNull(job);
+        ArgumentException.ThrowIfNullOrWhiteSpace(cronExpression);
+
+        Internal = new InternalSchedule(_ => MakeAsync(job), new CronTimeCalculator(cronExpression));
+    }
+
+    /// <summary>
+    /// Creates a new schedule for the given job.
+    /// </summary>
+    /// <param name="job">Job to be scheduled</param>
+    /// <param name="cronExpression">The scheduling as a cron expression</param>
+    public Schedule(Func<Task> job, string cronExpression)
+    {
+        ArgumentNullException.ThrowIfNull(job);
+        ArgumentException.ThrowIfNullOrWhiteSpace(cronExpression);
+
+        Internal = new InternalSchedule(_ => job(), new CronTimeCalculator(cronExpression));
+    }
+
+    /// <summary>
+    /// Creates a new schedule for the given job.
+    /// </summary>
+    /// <param name="job">Job to be scheduled</param>
+    /// <param name="cronExpression">The scheduling as a cron expression</param>
+    public Schedule(Func<CancellationToken, Task> job, string cronExpression)
+    {
+        ArgumentNullException.ThrowIfNull(job);
+        ArgumentException.ThrowIfNullOrWhiteSpace(cronExpression);
+
+        Internal = new InternalSchedule(job, new CronTimeCalculator(cronExpression));
+    }
 
     private static Task MakeAsync(Action action)
     {
@@ -131,10 +165,10 @@ public class Schedule
     /// <param name="specifier">Scheduling of this schedule</param>
     public void SetScheduling(Action<RunSpecifier> specifier)
     {
+        ArgumentNullException.ThrowIfNull(specifier);
+
         lock (Internal.RunningLock)
         {
-            ArgumentNullException.ThrowIfNull(specifier);
-
             Internal.SetScheduling(new FluentTimeCalculator(specifier));
         }
     }
@@ -143,14 +177,14 @@ public class Schedule
     /// Changes the scheduling of this schedule.
     /// You must not call this method if the schedule is running.
     /// </summary>
-    /// <param name="cron">Cron of this schedule</param>
-    public void SetScheduling(string cron)
+    /// <param name="cronExpression">The scheduling as a cron expression</param>
+    public void SetScheduling(string cronExpression)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(cronExpression);
+
         lock (Internal.RunningLock)
         {
-            ArgumentNullException.ThrowIfNull(cron);
-
-            Internal.SetScheduling(new CronTimeCalculator(cron));
+            Internal.SetScheduling(new CronTimeCalculator(cronExpression));
         }
     }
 
@@ -196,6 +230,8 @@ public class Schedule
     /// <param name="timeout">Milliseconds to wait</param>
     public void StopAndBlock(int timeout)
     {
+        ArgumentOutOfRangeException.ThrowIfNegative(timeout);
+
         lock (Internal.RunningLock)
         {
             Internal.Stop(true, timeout);
@@ -209,6 +245,8 @@ public class Schedule
     /// <param name="timeout">Time to wait</param>
     public void StopAndBlock(TimeSpan timeout)
     {
+        ValidationHelper.ThrowIfNegative(timeout);
+
         lock (Internal.RunningLock)
         {
             Internal.Stop(true, timeout.Milliseconds);
