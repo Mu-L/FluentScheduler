@@ -6,8 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 
-[SuppressMessage("Design", "CA1001", Justification = "Managed resources that need disposing would only be created if " +
-    "the timer or the wait handle of the cancellation token would be used.")]
+[SuppressMessage("Design", "CA1001", Justification = "The CancellationTokenSource is being disposed when stopping.")]
 internal class InternalSchedule
 {
     internal ITimeCalculator Calculator;
