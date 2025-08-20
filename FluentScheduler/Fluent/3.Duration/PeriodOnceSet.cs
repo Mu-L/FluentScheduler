@@ -18,7 +18,7 @@ public class PeriodOnceSet
     /// <param name="minute">The minute (0 through 59).</param>
     public void At(int hour, int minute)
     {
-        ValidationHelper.ThrowIfOutOfMilitaryTimeRange(hour, minute);
+        ThrowHelper.ThrowIfOutOfMilitaryTimeRange(hour, minute);
 
         _calculator.PeriodCalculations.Add(last => new DateTime(last.Year, last.Month, last.Day, hour, minute, 0));
     }
@@ -29,11 +29,11 @@ public class PeriodOnceSet
     /// <param name="timeCollection">Time of day.</param>
     public void At(params TimeSpan[] timeCollection)
     {
-        ValidationHelper.ThrowIfOutOfMilitaryTimeRange(timeCollection);
+        ThrowHelper.ThrowIfOutOfMilitaryTimeRange(timeCollection);
 
         foreach (var time in timeCollection)
         {
-            if (time >= ((ITimeCalculator)_calculator).Now().TimeOfDay)
+            if (time >= ((INextRunCalculator)_calculator).Now().TimeOfDay)
             {
                 _calculator.PeriodCalculations.Add(last =>
                     new DateTime(last.Year, last.Month, last.Day, time.Hours, time.Minutes, 0)
@@ -67,7 +67,7 @@ public class PeriodOnceSet
         _calculator.PeriodCalculations.Add(
             last =>
             {
-                var now = ((ITimeCalculator)_calculator).Now();
+                var now = ((INextRunCalculator)_calculator).Now();
                 var lastTime = last.TimeOfDay;
 
                 var next = new DateTime(last.Year, last.Month, last.Day).Add(from);

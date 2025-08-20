@@ -48,7 +48,7 @@ public class RestrictionUnit
     /// <param name="exceptionalDays">Days to exclude.</param>
     public PeriodOnceSet Except(params DayOfWeek[] exceptionalDays)
     {
-        ValidationHelper.ThrowIfNotDefinedInEnum(exceptionalDays);
+        ThrowHelper.ThrowIfNotDefinedInEnum(exceptionalDays);
 
         var allDays = Enum.GetValues<DayOfWeek>();
 

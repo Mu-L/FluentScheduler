@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
-internal class FluentTimeCalculator : ITimeCalculator
+internal class FluentTimeCalculator : INextRunCalculator
 {
     private bool _firstCalculation = true;
 
@@ -17,11 +17,11 @@ internal class FluentTimeCalculator : ITimeCalculator
 
     internal FluentTimeCalculator(Action<RunSpecifier> specifier) => specifier(new RunSpecifier(this));
 
-    void ITimeCalculator.Reset() => _firstCalculation = true;
+    void INextRunCalculator.Reset() => _firstCalculation = true;
 
-    Func<DateTime> ITimeCalculator.Now { get; set; } = () => DateTime.Now;
+    Func<DateTime> INextRunCalculator.Now { get; set; } = () => DateTime.Now;
 
-    DateTime? ITimeCalculator.Calculate(DateTime last) => CalculateOnce(last) ?? CalculatePeriod(last);
+    DateTime? INextRunCalculator.Calculate(DateTime last) => CalculateOnce(last) ?? CalculatePeriod(last);
 
     private DateTime? CalculateOnce(DateTime last)
     {

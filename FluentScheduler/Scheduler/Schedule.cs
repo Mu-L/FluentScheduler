@@ -245,7 +245,7 @@ public class Schedule
     /// <param name="timeout">Time to wait</param>
     public void StopAndBlock(TimeSpan timeout)
     {
-        ValidationHelper.ThrowIfNegative(timeout);
+        ThrowHelper.ThrowIfNegative(timeout);
 
         lock (Internal.RunningLock)
         {

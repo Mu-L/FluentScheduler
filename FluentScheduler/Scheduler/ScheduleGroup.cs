@@ -7,12 +7,12 @@ using System.Threading;
 using System.Threading.Tasks;
 
 /// <summary>
-/// Operations on multiple schedules at once.
+/// Operations that can be performed on multiple schedules at once.
 /// </summary>
 public static class ScheduleGroup
 {
     /// <summary>
-    /// Listens for the event raised when the job starts.
+    /// Adds a listener for the event raised when the job starts.
     /// </summary>
     /// <param name="schedules">Schedules to operate on</param>
     /// <param name="handler">Event handler for the job start</param>
@@ -26,7 +26,7 @@ public static class ScheduleGroup
     }
 
     /// <summary>
-    /// Listens for the event raised when the job ends.
+    /// Adds a listener for the event raised when the job ends.
     /// </summary>
     /// <param name="schedules">Schedules to operate on</param>
     /// <param name="handler">Event handler for the job end</param>
@@ -40,7 +40,7 @@ public static class ScheduleGroup
     }
 
     /// <summary>
-    /// 'Unlistens' for the event raised when the job starts.
+    /// Removes a listener for the event raised when the job starts.
     /// </summary>
     /// <param name="schedules">Schedules to operate on</param>
     /// <param name="handler">Event handler for the job start</param>
@@ -54,7 +54,7 @@ public static class ScheduleGroup
     }
 
     /// <summary>
-    /// 'Unlistens' for the event raised when the job ends.
+    /// Removes a listener for the event raised when the job ends.
     /// </summary>
     /// <param name="schedules">Schedules to operate on</param>
     /// <param name="handler">Event handler for the job end</param>
@@ -69,8 +69,7 @@ public static class ScheduleGroup
 
 
     /// <summary>
-    /// Resets the scheduling of the schedules.
-    /// You must not call this method if any of the schedules is running.
+    /// Resets the scheduling of the schedules. You must not call this method if any of the schedules is running.
     /// </summary>
     /// <param name="schedules">Schedules to operate on</param>
     public static void ResetScheduling(this IEnumerable<Schedule> schedules)
@@ -81,8 +80,7 @@ public static class ScheduleGroup
     }
 
     /// <summary>
-    /// Changes the scheduling of the schedules.
-    /// You must not call this method if any of the schedules is running.
+    /// Changes the scheduling of the schedules. You must not call this method if any of the schedules is running.
     /// </summary>
     /// <param name="schedules">Schedules to operate on</param>
     /// <param name="specifier">Scheduling of this schedule</param>
@@ -108,8 +106,7 @@ public static class ScheduleGroup
     }
 
     /// <summary>
-    /// Stops the schedules that are running.
-    /// This call does not block.
+    /// Stops the schedules that are running. This call does not block.
     /// </summary>
     /// <param name="schedules">Schedules to operate on</param>
     public static void Stop(this IEnumerable<Schedule> schedules)
@@ -120,8 +117,7 @@ public static class ScheduleGroup
     }
 
     /// <summary>
-    /// Stops the schedules that are running.
-    /// This call blocks (it waits for the running job to end its execution).
+    /// Stops the schedules that are running. This call blocks (it waits for the running jobs to end its execution).
     /// </summary>
     /// <param name="schedules">Schedules to operate on</param>
     public static void StopAndBlock(this IEnumerable<Schedule> schedules)
@@ -132,8 +128,7 @@ public static class ScheduleGroup
     }
 
     /// <summary>
-    /// Stops the schedules that are running.
-    /// This call blocks (it waits for the running job to end its execution).
+    /// Stops the schedules that are running. This call blocks (it waits for the running job to end its execution).
     /// </summary>
     /// <param name="schedules">Schedules to operate on</param>
     /// <param name="timeout">Milliseconds to wait</param>
@@ -146,23 +141,23 @@ public static class ScheduleGroup
     }
 
     /// <summary>
-    /// Stops the schedules that are running.
-    /// This call blocks (it waits for the running job to end its execution).
+    /// Stops the schedules that are running. This call blocks (it waits for the running job to end its execution).
     /// </summary>
     /// <param name="schedules">Schedules to operate on</param>
     /// <param name="timeout">Time to wait</param>
     public static void StopAndBlock(this IEnumerable<Schedule> schedules, TimeSpan timeout)
     {
         ArgumentNullException.ThrowIfNull(schedules);
-        ValidationHelper.ThrowIfNegative(timeout);
+        ThrowHelper.ThrowIfNegative(timeout);
 
         ForEach(schedules, true, i => i.Stop(true, timeout.Milliseconds));
     }
 
     /// <summary>
-    /// True if all of the schedules are running, false otherwise.
+    /// Checks if all the schedules are currently running.
     /// </summary>
     /// <param name="schedules">Schedules to operate on</param>
+    /// <returns>True if all of the schedules are running, false otherwise</returns>
     public static bool AllRunning(this IEnumerable<Schedule> schedules)
     {
         ArgumentNullException.ThrowIfNull(schedules);
@@ -171,9 +166,10 @@ public static class ScheduleGroup
     }
 
     /// <summary>
-    /// True if all of the schedules are stopped, false otherwise.
+    /// Checks if all the schedules are currently not running.
     /// </summary>
     /// <param name="schedules">Schedules to operate on</param>
+    /// <returns>True if all of the schedules are stopped, false otherwise.</returns>
     public static bool AllStopped(this IEnumerable<Schedule> schedules)
     {
         ArgumentNullException.ThrowIfNull(schedules);
@@ -182,9 +178,10 @@ public static class ScheduleGroup
     }
 
     /// <summary>
-    /// True if any of the schedules are running, false otherwise.
+    /// Checks if any of the schedules is currently running.
     /// </summary>
     /// <param name="schedules">Schedules to operate on</param>
+    /// <returns>True if any of the schedules is running, false otherwise.</returns>
     public static bool AnyRunning(this IEnumerable<Schedule> schedules)
     {
         ArgumentNullException.ThrowIfNull(schedules);
@@ -193,9 +190,10 @@ public static class ScheduleGroup
     }
 
     /// <summary>
-    /// True if any of the schedules are stopped, false otherwise.
+    /// Checks if any of the schedules is currently not running.
     /// </summary>
     /// <param name="schedules">Schedules to operate on</param>
+    /// <returns>True if any of the schedules are stopped, false otherwise</returns>
     public static bool AnyStopped(this IEnumerable<Schedule> schedules)
     {
         ArgumentNullException.ThrowIfNull(schedules);
@@ -204,7 +202,7 @@ public static class ScheduleGroup
     }
 
     /// <summary>
-    /// The schedule that is the next to run and the date and time of its next job run.
+    /// Finds the schedule that is the next to run and the its expected run date and time.
     /// </summary>
     /// <param name="schedules">Schedules to operate on</param>
     /// <returns>The schedule and its next run date and time</returns>
@@ -212,26 +210,34 @@ public static class ScheduleGroup
     {
         ArgumentNullException.ThrowIfNull(schedules);
 
-        var _schedules = schedules.ToList();
+        // getting any potential deferred execution out of the way
+        var _schedules = schedules.ToArray();
 
+        // nothing to do if the collection is empty
         if (!_schedules.Any())
             return null;
 
-        var next = 0;
-        var times = Select(_schedules, i => i.NextRun).ToList();
+        // the index of the earliest next run found and an array of schedules' next run times
+        var earliest = 0;
+        var times = Select(_schedules, i => i.NextRun).ToArray();
 
-        foreach (var i in Enumerable.Range(0, times.Count))
+        // finding the index of the earliest next run
+        for (var i = 0; i < times.Length; ++i)
         {
-            if (times[i] < times[next])
-                next = i;
+            if (times[i] < times[earliest])
+                earliest = i;
         }
 
-        if (!times[next].HasValue)
+        // if there's no next run we return null
+        if (!times[earliest].HasValue)
             return null;
 
-        return (_schedules[next], times[next].Value);
+        // a tuple of the schedule and next run time of the earliest found next run
+        return (_schedules[earliest], times[earliest].Value);
     }
 
+    // acquire all running locks, runs the given action on the given schedules (in parallel or not), then release the
+    // acquired locks
     private static void ForEach(
         IEnumerable<Schedule> schedules, bool parallel, params Action<InternalSchedule>[] toRun)
     {
@@ -260,7 +266,8 @@ public static class ScheduleGroup
         }
     }
 
-    private static IEnumerable<T> Select<T>(IEnumerable<Schedule> schedules, Func<InternalSchedule, T> toRun)
+    // acquires all running locks, runs LINQ's Select() on the given schedules, then release the acquired locks
+    private static IEnumerable<T> Select<T>(IEnumerable<Schedule> schedules, Func<InternalSchedule, T> selector)
     {
         var internals = Internal(schedules);
 
@@ -268,7 +275,7 @@ public static class ScheduleGroup
 
         try
         {
-            return [.. internals.Select(toRun)];
+            return [.. internals.Select(selector)];
         }
         finally
         {
@@ -276,15 +283,18 @@ public static class ScheduleGroup
         }
     }
 
+    // a shorthand for getting the internal schedules behind the given schedules, purely for readability
     private static InternalSchedule[] Internal(IEnumerable<Schedule> schedules) =>
         [.. schedules.Select(s => s.Internal)];
 
+    // synchronously acquires all running locks of all schedules
     private static void EnterLock(IEnumerable<InternalSchedule> internals)
     {
         foreach (var i in internals)
             Monitor.Enter(i.RunningLock);
     }
 
+    // synchronously releases all the running locks of all schedules
     private static void ExitLock(IEnumerable<InternalSchedule> internals)
     {
         foreach (var i in internals)

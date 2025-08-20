@@ -3,14 +3,18 @@ using System.Runtime.CompilerServices;
 
 namespace FluentScheduler;
 
-internal class ValidationHelper
+// helper methods for performing simple validations and that should throw an exception
+internal class ThrowHelper
 {
+    // throws if the given value is not present in the given enum T
     internal static void ThrowIfNotDefinedInEnum<T>(
         T value, [CallerArgumentExpression(nameof(value))] string paramName = null) where T : struct, Enum
     {
         if (!Enum.IsDefined(value))
             throw new ArgumentOutOfRangeException(paramName, value, "Enumeration value out of range.");
     }
+
+    // a version of the existing helper that operates on an array instead
     internal static void ThrowIfNotDefinedInEnum<T>(
         T[] values, [CallerArgumentExpression(nameof(values))] string paramName = null) where T : struct, Enum
     {
@@ -19,6 +23,7 @@ internal class ValidationHelper
         Array.ForEach(values, v => ThrowIfNotDefinedInEnum(v, paramName));
     }
 
+    // throws if the given time is negative
     internal static void ThrowIfNegative(
         TimeSpan value, [CallerArgumentExpression(nameof(value))] string paramName = null)
     {
@@ -26,6 +31,7 @@ internal class ValidationHelper
             throw new ArgumentOutOfRangeException(paramName, value, "The given time must be a non-negative value.");
     }
 
+    // throws if the given hours and minutes are outside 00:00 to 23:59
     internal static void ThrowIfOutOfMilitaryTimeRange(
         int hour,
         int minute,
@@ -39,6 +45,7 @@ internal class ValidationHelper
         ArgumentOutOfRangeException.ThrowIfGreaterThan(minute, 59, minuteParamName);
     }
 
+    // throws if the hours and minutes component of the timespan are outside 00:00 to 23:59
     internal static void ThrowIfOutOfMilitaryTimeRange(
         TimeSpan value, [CallerArgumentExpression(nameof(value))] string paramName = null)
     {
@@ -48,6 +55,7 @@ internal class ValidationHelper
         ArgumentOutOfRangeException.ThrowIfGreaterThan(value.Minutes, 59, $"{paramName}.Minutes");
     }
 
+    // a version of the existing helper that operates on an array instead
     internal static void ThrowIfOutOfMilitaryTimeRange(
         TimeSpan[] values, [CallerArgumentExpression(nameof(values))] string paramName = null)
     {

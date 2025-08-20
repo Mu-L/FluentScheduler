@@ -28,7 +28,7 @@ public class RunSpecifier
     /// <param name="day">Day to run the job</param>
     public RestrictionUnit Every(DayOfWeek day)
     {
-        ValidationHelper.ThrowIfNotDefinedInEnum(day);
+        ThrowHelper.ThrowIfNotDefinedInEnum(day);
 
         _calculator.PeriodCalculations.Add(last =>
         {
@@ -51,7 +51,7 @@ public class RunSpecifier
     /// <param name="time">Time to run the job</param>
     public void Every(TimeSpan time)
     {
-        ValidationHelper.ThrowIfNegative(time);
+        ThrowHelper.ThrowIfNegative(time);
 
         var timeOfDay = new TimeSpan(time.Hours, time.Minutes, time.Seconds);
         _calculator.PeriodCalculations.Add(last => last.Add(timeOfDay));
@@ -83,7 +83,7 @@ public class RunSpecifier
     /// <param name="minute">The minute (0 to 59)</param>
     public OnceSet OnceAt(int hour, int minute)
     {
-        ValidationHelper.ThrowIfOutOfMilitaryTimeRange(hour, minute);
+        ThrowHelper.ThrowIfOutOfMilitaryTimeRange(hour, minute);
 
         OnceAt(new TimeSpan(hour, minute, 0));
         return new OnceSet(_calculator);
@@ -95,7 +95,7 @@ public class RunSpecifier
     /// <param name="timeOfDay">Time of the day to run</param>
     public OnceSet OnceAt(TimeSpan timeOfDay)
     {
-        ValidationHelper.ThrowIfOutOfMilitaryTimeRange(timeOfDay);
+        ThrowHelper.ThrowIfOutOfMilitaryTimeRange(timeOfDay);
 
         timeOfDay = new TimeSpan(timeOfDay.Hours, timeOfDay.Minutes, timeOfDay.Seconds);
 
@@ -136,7 +136,7 @@ public class RunSpecifier
     /// <param name="delay">Delay to wait</param>
     public OnceSet OnceIn(TimeSpan delay)
     {
-        ValidationHelper.ThrowIfNegative(delay);
+        ThrowHelper.ThrowIfNegative(delay);
 
         _calculator.OnceCalculation = last => last.Add(delay);
         return new OnceSet(_calculator);

@@ -6,49 +6,63 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 
+// the internal/private side of the Schedule class, in a separate dedicated class purely for readability
 [SuppressMessage("Design", "CA1001", Justification = "The CancellationTokenSource is being disposed when stopping.")]
 internal class InternalSchedule
 {
-    internal ITimeCalculator Calculator;
-
+    // the job given by the library user
     private readonly Func<CancellationToken, Task> _job;
 
+    // the calculator for the next run, internal access to allow unit test mocking
+    internal INextRunCalculator _calculator;
+
+    // the task when a job is running, or null when not running
     private Task _task;
 
+    // the source of cancellation token of a job execution, a new one is created on Start() and disposed on Stop()
     private CancellationTokenSource _tokenSource;
 
-    internal InternalSchedule(Func<CancellationToken, Task> job, ITimeCalculator calculator)
+    // similar ctor to the public schedule class, the only different being taking an already instantiated calculator
+    internal InternalSchedule(Func<CancellationToken, Task> job, INextRunCalculator calculator)
     {
         _job = job;
         SetScheduling(calculator);
     }
 
+    // the computed next run date and time, it can be null due the library supporting scheduling for running only once
     internal DateTime? NextRun { get; private set; }
 
+    // some operations should not be performed while the job is running
     internal object RunningLock { get; } = new object();
 
+    // event handler provided by the library user, can be null
     internal event EventHandler<JobStartedEventArgs> JobStarted;
 
+    // event handler provided by the library user, can be null
     internal event EventHandler<JobEndedEventArgs> JobEnded;
 
+    // clears both next run and the calculator for the schedule, leaving an empty schedule with only the job set
     internal void ResetScheduling()
     {
         NextRun = null;
-        Calculator.Reset();
+        _calculator.Reset();
     }
 
-    internal void SetScheduling(ITimeCalculator calculator)
+    // changes the scheduling of this schedule
+    internal void SetScheduling(INextRunCalculator calculator)
     {
         NextRun = null;
-        Calculator = calculator;
+        _calculator = calculator;
     }
 
+    // shorthand for throwing an exception if the job is currently running
     internal void ShouldNotBeRunning()
     {
         if (Running())
             throw new InvalidOperationException("The scheduling cannot not be changed while the schedule is running.");
     }
 
+    // returns true if the job is running
     internal bool Running()
     {
         Debug.Assert(
@@ -59,17 +73,19 @@ internal class InternalSchedule
         return _task != null;
     }
 
+    // starts the schedule
     internal void Start()
     {
         if (Running())
             return;
 
-        CalculateNextRun(Calculator.Now());
+        CalculateNextRun(_calculator.Now());
 
         _tokenSource = new CancellationTokenSource();
         _task = Run(_tokenSource.Token);
     }
 
+    // stops the schedule in a non-blocking fashion or in a blocking one with an optional timeout
     internal void Stop(bool block, int? timeout = null)
     {
         if (timeout.HasValue)
@@ -94,10 +110,13 @@ internal class InternalSchedule
         }
     }
 
-    internal void UseUtc() => Calculator.Now = () => DateTime.UtcNow;
+    // use UTC time instead of the machine's time (UtcNow instead of Now)
+    internal void UseUtc() => _calculator.Now = () => DateTime.UtcNow;
 
-    private void CalculateNextRun(DateTime last) => NextRun = Calculator.Calculate(last);
+    // computes and sets the next run
+    private void CalculateNextRun(DateTime last) => NextRun = _calculator.Calculate(last);
 
+    // the main method of scheduling, runs user's job, raise events, computes next run, and sleeps
     [SuppressMessage("Design", "CA1031", Justification = "It's OK to catch a general exception here because it comes " +
         "from user code and not from the library itself.")]
     [SuppressMessage("Reliability", "CA2016", Justification = "The cancellation token is not being passed forward to " +
@@ -110,7 +129,7 @@ internal class InternalSchedule
             return;
 
         // calculating delay
-        var delay = NextRun.Value - Calculator.Now();
+        var delay = NextRun.Value - _calculator.Now();
 
         // delaying until it's time to run or a cancellation was requested
         await Task.Delay(delay < TimeSpan.Zero ? TimeSpan.Zero : delay, token).ContinueWith(_ => { });
@@ -120,7 +139,7 @@ internal class InternalSchedule
             return;
 
         // used on both JobStarted and JobEnded events
-        var startTime = Calculator.Now();
+        var startTime = _calculator.Now();
 
         // calculating the next run
         // used on both JobEnded event and for the next run of this method
@@ -144,7 +163,7 @@ internal class InternalSchedule
         }
 
         // used on JobEnded event
-        var endTime = Calculator.Now();
+        var endTime = _calculator.Now();
 
         // raising JobEnded event
         JobEnded?.Invoke(this, new JobEndedEventArgs(exception, startTime, endTime, NextRun));

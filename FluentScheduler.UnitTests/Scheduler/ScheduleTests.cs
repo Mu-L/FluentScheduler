@@ -231,7 +231,7 @@ public class ScheduleTests
 
         // Act
         schedule.UseUtc();
-        var resultedNow = schedule.Internal.Calculator.Now();
+        var resultedNow = schedule.Internal._calculator.Now();
 
         // Assert
         Equal(expectedNow.Hour, resultedNow.Hour);
@@ -246,7 +246,7 @@ public class ScheduleTests
         var schedule = new Schedule(() => { }, run => run.Now());
 
         // Act
-        var resultedNow = schedule.Internal.Calculator.Now();
+        var resultedNow = schedule.Internal._calculator.Now();
 
         // Assert
         Equal(expectedNow.Hour, resultedNow.Hour);
@@ -279,7 +279,7 @@ public class ScheduleTests
         schedule.UseUtc();
         schedule.Start();
 
-        var resultedNow = schedule.Internal.Calculator.Now();
+        var resultedNow = schedule.Internal._calculator.Now();
 
         // Assert
         Equal(expectedNow.Hour, resultedNow.Hour);
@@ -299,7 +299,7 @@ public class ScheduleTests
         schedule.UseUtc();
         schedule.Start();
 
-        var resultedNow = schedule.Internal.Calculator.Now();
+        var resultedNow = schedule.Internal._calculator.Now();
 
         // Assert
         Equal(expectedNow.Hour, resultedNow.Hour);
