@@ -132,7 +132,11 @@ internal class InternalSchedule
         var delay = NextRun.Value - _calculator.Now();
 
         // delaying until it's time to run or a cancellation was requested
-        await Task.Delay(delay < TimeSpan.Zero ? TimeSpan.Zero : delay, token).ContinueWith(_ => { });
+        // the empty ContinueWith() swallows TaskCanceledException
+        // not locking the UI with ConfigureAwait(false)
+        await Task.Delay(delay < TimeSpan.Zero ? TimeSpan.Zero : delay, token)
+            .ContinueWith(_ => { })
+            .ConfigureAwait(false);
 
         // checking if a cancellation was requested
         if (token.IsCancellationRequested)
@@ -154,7 +158,8 @@ internal class InternalSchedule
         try
         {
             // running the job
-            await _job(token);
+            // not locking the UI with ConfigureAwait(false)
+            await _job(token).ConfigureAwait(false);
         }
         catch (Exception e)
         {
