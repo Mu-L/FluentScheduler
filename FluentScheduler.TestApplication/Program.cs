@@ -12,7 +12,24 @@ internal static class Program
         InitializeLogger();
 
         var schedules = new[] {
+            Welcome(),
+
+            NonReentrant(),
+            Faulty(),
+
             FiveMinutes(),
+            TenMinutes(),
+            Hour(),
+            Day(),
+            Weekday(),
+            Week(),
+
+            Sunday(),
+            Monday(),
+            Tuesday(),
+            Thursday(),
+            Friday(),
+            Saturday(),
         };
 
         schedules.ListenJobStarted(JobStartedHandler);
