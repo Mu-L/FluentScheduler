@@ -285,6 +285,7 @@ public class ScheduleGroupTests
         // Arrange
         var scheduleGroup = new List<Schedule>
         {
+            new(() => { } , run => run.Now()),
             new(() => { } , run => run.Every(10).Minutes()),
             new(() => { } , run => run.Every(20).Minutes()),
         };
@@ -298,6 +299,7 @@ public class ScheduleGroupTests
         var nextRun = scheduleGroup.NextRun();
 
         // Assert
+        True(nextRun.HasValue);
         Equal(expectedNextRun.AddMinutes(10).Minute, nextRun.Value.Item2.Minute);
     }
 }

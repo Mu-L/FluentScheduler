@@ -266,30 +266,23 @@ public static class ScheduleGroup
     {
         ArgumentNullException.ThrowIfNull(schedules);
 
-        // getting any potential deferred execution out of the way
-        var _schedules = schedules.ToArray();
+        var _schedules = schedules.ToArray(); // forcing evaluation of a potential deferred execution
+
+        var times = Select(_schedules, i => i.NextRun) // all next run times (including nulls for stopped schedules)
+            .Where(i => i.HasValue) // keeping only running schedules
+            .Select(i => i.Value) // filtering out the nulls
+            .ToArray();
 
         // nothing to do if the collection is empty
-        if (!_schedules.Any())
+        if (!times.Any())
             return null;
 
-        // the index of the earliest next run found and an array of schedules' next run times
-        var earliest = 0;
-        var times = Select(_schedules, i => i.NextRun).ToArray();
+        // finding the earliest next run time and schedule
+        var earliestTime = times.Min();
+        var i = Array.IndexOf(times, earliestTime);
+        var earliestSchedule = _schedules[i];
 
-        // finding the index of the earliest next run
-        for (var i = 0; i < times.Length; ++i)
-        {
-            if (times[i] < times[earliest])
-                earliest = i;
-        }
-
-        // if there's no next run we return null
-        if (!times[earliest].HasValue)
-            return null;
-
-        // a tuple of the schedule and next run time of the earliest found next run
-        return (_schedules[earliest], times[earliest].Value);
+        return (earliestSchedule, earliestTime);
     }
 
     // acquire all running locks, runs the given action on the given schedules (in parallel or not), then release the
