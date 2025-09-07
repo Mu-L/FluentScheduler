@@ -132,8 +132,6 @@ public class ScheduleGroupTests
         scheduleGroup.SetScheduling(newRun => newRun.Every(3).Minutes());
         scheduleGroup.Start();
 
-        scheduleGroup.StopAndBlock();
-
         // Assert
         Equal(now.AddMinutes(3).Minute, scheduleGroup[0].NextRun.Value.Minute);
     }
@@ -301,5 +299,12 @@ public class ScheduleGroupTests
         // Assert
         True(nextRun.HasValue);
         Equal(expectedNextRun.AddMinutes(10).Minute, nextRun.Value.Item2.Minute);
+
+        // Act
+        scheduleGroup.StopAndBlock();
+        nextRun = scheduleGroup.NextRun();
+
+        // Assert
+        False(nextRun.HasValue);
     }
 }

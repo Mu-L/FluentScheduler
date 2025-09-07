@@ -107,6 +107,7 @@ internal class InternalSchedule
 
             _task = null;
             _tokenSource = null;
+            NextRun = null;
         }
     }
 

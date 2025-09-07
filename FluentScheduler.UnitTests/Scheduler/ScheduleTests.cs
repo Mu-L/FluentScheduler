@@ -21,6 +21,7 @@ public class ScheduleTests
         // Assert
         Equal(1, calls);
         True(schedule.Running);
+        True(schedule.NextRun.HasValue);
 
         // Act
         await Task.Delay(1000);
@@ -67,6 +68,7 @@ public class ScheduleTests
         // Assert
         Equal(1, calls);
         True(schedule.Running);
+        True(schedule.NextRun.HasValue);
 
         // Act
         await Task.Delay(1000);
@@ -107,6 +109,7 @@ public class ScheduleTests
 
         // Assert
         False(schedule.Running);
+        False(schedule.NextRun.HasValue);
     }
 
     [Fact]
@@ -130,6 +133,7 @@ public class ScheduleTests
         // Assert
         Equal(1, calls);
         False(schedule.Running);
+        False(schedule.NextRun.HasValue);
     }
 
     [Fact]
