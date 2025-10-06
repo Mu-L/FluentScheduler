@@ -18,8 +18,8 @@ public class Schedule
     /// <param name="specifier">The scheduling as a fluent call</param>
     public Schedule(Action job, Action<RunSpecifier> specifier)
     {
-        ArgumentNullException.ThrowIfNull(job);
-        ArgumentNullException.ThrowIfNull(specifier);
+        ThrowHelper.ThrowIfNull(job, nameof(job));
+        ThrowHelper.ThrowIfNull(specifier, nameof(specifier));
 
         Internal = new InternalSchedule(_ => MakeAsync(job), new FluentTimeCalculator(specifier));
     }
@@ -31,8 +31,8 @@ public class Schedule
     /// <param name="specifier">The scheduling as a fluent call</param>
     public Schedule(Func<Task> job, Action<RunSpecifier> specifier)
     {
-        ArgumentNullException.ThrowIfNull(job);
-        ArgumentNullException.ThrowIfNull(specifier);
+        ThrowHelper.ThrowIfNull(job, nameof(job));
+        ThrowHelper.ThrowIfNull(specifier, nameof(specifier));
 
         Internal = new InternalSchedule(_ => job(), new FluentTimeCalculator(specifier));
     }
@@ -44,8 +44,8 @@ public class Schedule
     /// <param name="specifier">The scheduling as a fluent call</param>
     public Schedule(Func<CancellationToken, Task> job, Action<RunSpecifier> specifier)
     {
-        ArgumentNullException.ThrowIfNull(job);
-        ArgumentNullException.ThrowIfNull(specifier);
+        ThrowHelper.ThrowIfNull(job, nameof(job));
+        ThrowHelper.ThrowIfNull(specifier, nameof(specifier));
 
         Internal = new InternalSchedule(job, new FluentTimeCalculator(specifier));
     }
@@ -57,8 +57,8 @@ public class Schedule
     /// <param name="cronExpression">The scheduling as a cron expression</param>
     public Schedule(Action job, string cronExpression)
     {
-        ArgumentNullException.ThrowIfNull(job);
-        ArgumentException.ThrowIfNullOrWhiteSpace(cronExpression);
+        ThrowHelper.ThrowIfNull(job, nameof(job));
+        ThrowHelper.ThrowIfNullOrWhiteSpace(cronExpression, nameof(cronExpression));
 
         Internal = new InternalSchedule(_ => MakeAsync(job), new CronTimeCalculator(cronExpression));
     }
@@ -70,8 +70,8 @@ public class Schedule
     /// <param name="cronExpression">The scheduling as a cron expression</param>
     public Schedule(Func<Task> job, string cronExpression)
     {
-        ArgumentNullException.ThrowIfNull(job);
-        ArgumentException.ThrowIfNullOrWhiteSpace(cronExpression);
+        ThrowHelper.ThrowIfNull(job, nameof(job));
+        ThrowHelper.ThrowIfNullOrWhiteSpace(cronExpression, nameof(cronExpression));
 
         Internal = new InternalSchedule(_ => job(), new CronTimeCalculator(cronExpression));
     }
@@ -83,8 +83,8 @@ public class Schedule
     /// <param name="cronExpression">The scheduling as a cron expression</param>
     public Schedule(Func<CancellationToken, Task> job, string cronExpression)
     {
-        ArgumentNullException.ThrowIfNull(job);
-        ArgumentException.ThrowIfNullOrWhiteSpace(cronExpression);
+        ThrowHelper.ThrowIfNull(job, nameof(job));
+        ThrowHelper.ThrowIfNullOrWhiteSpace(cronExpression, nameof(cronExpression));
 
         Internal = new InternalSchedule(job, new CronTimeCalculator(cronExpression));
     }
@@ -170,7 +170,7 @@ public class Schedule
     /// <param name="specifier">Scheduling of this schedule</param>
     public void SetScheduling(Action<RunSpecifier> specifier)
     {
-        ArgumentNullException.ThrowIfNull(specifier);
+        ThrowHelper.ThrowIfNull(specifier, nameof(specifier));
 
         lock (Internal.RunningLock)
         {
@@ -185,7 +185,7 @@ public class Schedule
     /// <param name="cronExpression">The scheduling as a cron expression</param>
     public void SetScheduling(string cronExpression)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(cronExpression);
+        ThrowHelper.ThrowIfNullOrWhiteSpace(cronExpression, nameof(cronExpression));
 
         lock (Internal.RunningLock)
         {
@@ -235,7 +235,7 @@ public class Schedule
     /// <param name="timeout">Milliseconds to wait</param>
     public void StopAndBlock(int timeout)
     {
-        ArgumentOutOfRangeException.ThrowIfNegative(timeout);
+        ThrowHelper.ThrowIfNegative(timeout, nameof(timeout));
 
         lock (Internal.RunningLock)
         {
@@ -250,7 +250,7 @@ public class Schedule
     /// <param name="timeout">Time to wait</param>
     public void StopAndBlock(TimeSpan timeout)
     {
-        ThrowHelper.ThrowIfNegative(timeout);
+        ThrowHelper.ThrowIfNegative(timeout, nameof(timeout));
 
         lock (Internal.RunningLock)
         {

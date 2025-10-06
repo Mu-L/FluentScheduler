@@ -17,7 +17,7 @@ public class OnceSet
     /// <param name="interval">Interval (without unit) to wait</param>
     public PeriodDurationSet AndEvery(int interval)
     {
-        ArgumentOutOfRangeException.ThrowIfNegative(interval);
+        ThrowHelper.ThrowIfNegative(interval, nameof(interval));
 
         return new PeriodDurationSet(interval, _calculator);
     }
@@ -28,7 +28,7 @@ public class OnceSet
     /// <param name="day">Day to run the job</param>
     public RestrictionUnit AndEvery(DayOfWeek day)
     {
-        ThrowHelper.ThrowIfNotDefinedInEnum(day);
+        ThrowHelper.ThrowIfNotDefinedInEnum(day, nameof(day));
 
         _calculator.PeriodCalculations.Add(last =>
         {

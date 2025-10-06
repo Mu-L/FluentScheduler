@@ -92,7 +92,7 @@ internal class InternalSchedule
     internal void Stop(bool block, int? timeout = null)
     {
         if (timeout.HasValue)
-            ArgumentOutOfRangeException.ThrowIfNegative(timeout.Value);
+            ThrowHelper.ThrowIfNegative(timeout.Value, nameof(timeout));
 
         if (!Running())
             return;

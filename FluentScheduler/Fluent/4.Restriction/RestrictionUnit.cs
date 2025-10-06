@@ -1,6 +1,7 @@
 namespace FluentScheduler;
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 /// <summary>
@@ -46,11 +47,12 @@ public class RestrictionUnit
     /// Excludes given days from job scheduling.
     /// </summary>
     /// <param name="exceptionalDays">Days to exclude.</param>
+    [SuppressMessage("Usage", "CA2263", Justification = "The generic overload is actually not available.")]
     public PeriodOnceSet Except(params DayOfWeek[] exceptionalDays)
     {
-        ThrowHelper.ThrowIfNotDefinedInEnum(exceptionalDays);
+        ThrowHelper.ThrowIfNotDefinedInEnum(exceptionalDays, nameof(exceptionalDays));
 
-        var allDays = Enum.GetValues<DayOfWeek>();
+        var allDays = Enum.GetValues(typeof(DayOfWeek)).Cast<DayOfWeek>().ToArray();
 
         if (allDays.All(day => exceptionalDays.Contains(day)))
             throw new ArgumentException(

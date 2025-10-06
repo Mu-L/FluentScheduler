@@ -17,8 +17,8 @@ public class MonthUnit
     /// <param name="day">The day (1 through the number of days in month)</param>
     public RestrictionUnit On(int day)
     {
-        ArgumentOutOfRangeException.ThrowIfNegative(day);
-        ArgumentOutOfRangeException.ThrowIfGreaterThan(day, 31);
+        ThrowHelper.ThrowIfNegative(day, nameof(day));
+        ThrowHelper.ThrowIfGreaterThan(day, 31, nameof(day));
 
         _calculator.PeriodCalculations.Add(
             last => new DateTime(last.Year, last.Month, day, last.Hour, last.Minute, last.Second));

@@ -19,8 +19,8 @@ public static class ScheduleGroup
     public static void ListenJobStarted(
         this IEnumerable<Schedule> schedules, EventHandler<JobStartedEventArgs> handler)
     {
-        ArgumentNullException.ThrowIfNull(schedules);
-        ArgumentNullException.ThrowIfNull(handler);
+        ThrowHelper.ThrowIfNull(schedules, nameof(schedules));
+        ThrowHelper.ThrowIfNull(handler, nameof(handler));
 
         ForEach(
             [.. schedules], // forcing evaluation of a potential deferred execution
@@ -37,8 +37,8 @@ public static class ScheduleGroup
     public static void ListenJobEnded(
         this IEnumerable<Schedule> schedules, EventHandler<JobEndedEventArgs> handler)
     {
-        ArgumentNullException.ThrowIfNull(schedules);
-        ArgumentNullException.ThrowIfNull(handler);
+        ThrowHelper.ThrowIfNull(schedules, nameof(schedules));
+        ThrowHelper.ThrowIfNull(handler, nameof(handler));
 
         ForEach(
             [.. schedules], // forcing evaluation of a potential deferred execution
@@ -55,8 +55,8 @@ public static class ScheduleGroup
     public static void UnlistenJobStarted(
         this IEnumerable<Schedule> schedules, EventHandler<JobStartedEventArgs> handler)
     {
-        ArgumentNullException.ThrowIfNull(schedules);
-        ArgumentNullException.ThrowIfNull(handler);
+        ThrowHelper.ThrowIfNull(schedules, nameof(schedules));
+        ThrowHelper.ThrowIfNull(handler, nameof(handler));
 
         ForEach(
             [.. schedules], // forcing evaluation of a potential deferred execution
@@ -73,8 +73,8 @@ public static class ScheduleGroup
     public static void UnlistenJobEnded(
         this IEnumerable<Schedule> schedules, EventHandler<JobEndedEventArgs> handler)
     {
-        ArgumentNullException.ThrowIfNull(schedules);
-        ArgumentNullException.ThrowIfNull(handler);
+        ThrowHelper.ThrowIfNull(schedules, nameof(schedules));
+        ThrowHelper.ThrowIfNull(handler, nameof(handler));
 
         ForEach(
             [.. schedules], // forcing evaluation of a potential deferred execution
@@ -90,7 +90,7 @@ public static class ScheduleGroup
     /// <param name="schedules">Schedules to operate on</param>
     public static void ResetScheduling(this IEnumerable<Schedule> schedules)
     {
-        ArgumentNullException.ThrowIfNull(schedules);
+        ThrowHelper.ThrowIfNull(schedules, nameof(schedules));
 
         ForEach(
             [.. schedules], // forcing evaluation of a potential deferred execution
@@ -107,8 +107,8 @@ public static class ScheduleGroup
     /// <param name="specifier">Scheduling of this schedule</param>
     public static void SetScheduling(this IEnumerable<Schedule> schedules, Action<RunSpecifier> specifier)
     {
-        ArgumentNullException.ThrowIfNull(schedules);
-        ArgumentNullException.ThrowIfNull(specifier);
+        ThrowHelper.ThrowIfNull(schedules, nameof(schedules));
+        ThrowHelper.ThrowIfNull(specifier, nameof(specifier));
 
         ForEach(
             [.. schedules], // forcing evaluation of a potential deferred execution
@@ -124,7 +124,7 @@ public static class ScheduleGroup
     /// <param name="schedules">Schedules to operate on</param>
     public static void Start(this IEnumerable<Schedule> schedules)
     {
-        ArgumentNullException.ThrowIfNull(schedules);
+        ThrowHelper.ThrowIfNull(schedules, nameof(schedules));
 
         ForEach(
             [.. schedules], // forcing evaluation of a potential deferred execution
@@ -139,7 +139,7 @@ public static class ScheduleGroup
     /// <param name="schedules">Schedules to operate on</param>
     public static void Stop(this IEnumerable<Schedule> schedules)
     {
-        ArgumentNullException.ThrowIfNull(schedules);
+        ThrowHelper.ThrowIfNull(schedules, nameof(schedules));
 
         ForEach(
             [.. schedules], // forcing evaluation of a potential deferred execution
@@ -154,7 +154,7 @@ public static class ScheduleGroup
     /// <param name="schedules">Schedules to operate on</param>
     public static void StopAndBlock(this IEnumerable<Schedule> schedules)
     {
-        ArgumentNullException.ThrowIfNull(schedules);
+        ThrowHelper.ThrowIfNull(schedules, nameof(schedules));
 
         ForEach(
             [.. schedules], // forcing evaluation of a potential deferred execution
@@ -170,8 +170,8 @@ public static class ScheduleGroup
     /// <param name="timeout">Milliseconds to wait</param>
     public static void StopAndBlock(this IEnumerable<Schedule> schedules, int timeout)
     {
-        ArgumentNullException.ThrowIfNull(schedules);
-        ArgumentOutOfRangeException.ThrowIfNegative(timeout);
+        ThrowHelper.ThrowIfNull(schedules, nameof(schedules));
+        ThrowHelper.ThrowIfNegative(timeout, nameof(timeout));
 
         ForEach(
             [.. schedules], // forcing evaluation of a potential deferred execution
@@ -187,8 +187,8 @@ public static class ScheduleGroup
     /// <param name="timeout">Time to wait</param>
     public static void StopAndBlock(this IEnumerable<Schedule> schedules, TimeSpan timeout)
     {
-        ArgumentNullException.ThrowIfNull(schedules);
-        ThrowHelper.ThrowIfNegative(timeout);
+        ThrowHelper.ThrowIfNull(schedules, nameof(schedules));
+        ThrowHelper.ThrowIfNegative(timeout, nameof(timeout));
 
         ForEach(
             [.. schedules], // forcing evaluation of a potential deferred execution
@@ -204,7 +204,7 @@ public static class ScheduleGroup
     /// <returns>True if all of the schedules are running, false otherwise</returns>
     public static bool AllRunning(this IEnumerable<Schedule> schedules)
     {
-        ArgumentNullException.ThrowIfNull(schedules);
+        ThrowHelper.ThrowIfNull(schedules, nameof(schedules));
 
         return Select(
             [.. schedules], // forcing evaluation of a potential deferred execution
@@ -219,7 +219,7 @@ public static class ScheduleGroup
     /// <returns>True if all of the schedules are stopped, false otherwise.</returns>
     public static bool AllStopped(this IEnumerable<Schedule> schedules)
     {
-        ArgumentNullException.ThrowIfNull(schedules);
+        ThrowHelper.ThrowIfNull(schedules, nameof(schedules));
 
         return Select(
             [.. schedules], // forcing evaluation of a potential deferred execution
@@ -234,7 +234,7 @@ public static class ScheduleGroup
     /// <returns>True if any of the schedules is running, false otherwise.</returns>
     public static bool AnyRunning(this IEnumerable<Schedule> schedules)
     {
-        ArgumentNullException.ThrowIfNull(schedules);
+        ThrowHelper.ThrowIfNull(schedules, nameof(schedules));
 
         return Select(
             [.. schedules], // forcing evaluation of a potential deferred execution
@@ -249,7 +249,7 @@ public static class ScheduleGroup
     /// <returns>True if any of the schedules are stopped, false otherwise</returns>
     public static bool AnyStopped(this IEnumerable<Schedule> schedules)
     {
-        ArgumentNullException.ThrowIfNull(schedules);
+        ThrowHelper.ThrowIfNull(schedules, nameof(schedules));
 
         return Select(
             [.. schedules], // forcing evaluation of a potential deferred execution
@@ -264,7 +264,7 @@ public static class ScheduleGroup
     /// <returns>The schedule and its next run date and time</returns>
     public static (Schedule, DateTime)? NextRun(this IEnumerable<Schedule> schedules)
     {
-        ArgumentNullException.ThrowIfNull(schedules);
+        ThrowHelper.ThrowIfNull(schedules, nameof(schedules));
 
         var _schedules = schedules.ToArray(); // forcing evaluation of a potential deferred execution
 

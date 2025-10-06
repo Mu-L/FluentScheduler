@@ -8,7 +8,8 @@
     <PackageProjectUrl>https://fluentscheduler.github.io</PackageProjectUrl>
     <PackageTags>background cron job schedule task</PackageTags>
     <RepositoryUrl>https://github.com/fluentscheduler/FluentScheduler</RepositoryUrl>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net8.0;net48</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
     <Version>6.0.0-alpha.3</Version>
   </PropertyGroup>
 

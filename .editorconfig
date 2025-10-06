@@ -131,9 +131,6 @@ dotnet_diagnostic.CA1060.severity = error
 # Do not hide base class methods
 dotnet_diagnostic.CA1061.severity = error
 
-# Validate arguments of public methods
-dotnet_diagnostic.CA1062.severity = error
-
 # Implement IDisposable correctly
 dotnet_diagnostic.CA1063.severity = error
 
