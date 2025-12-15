@@ -17,8 +17,6 @@
 
 # FluentScheduler
 
-**Important note**: This branch refers to the upcoming version of the library, that's still unstable. For the current version please head to the [master branch].
-
 Automated job scheduler with fluent interface for the .NET platform.
 
 ```cs
@@ -31,15 +29,23 @@ schedule.Start();
 ```
 
 **Learning?**
+<br>
 Check the [documentation]!
 
 **Comments? Problems? Suggestions?**
+<br>
 Check the [issues]!
 
 **Want to help?**
+<br>
 Check the [help wanted] label!
 
+**Looking for the now deprecated version 5 of the library**?
+<br>
+Check the [version-5] branch!
+
 [master branch]: https://github.com/fluentscheduler/FluentScheduler
-[documentation]: https://fluentscheduler.github.io/v6
+[documentation]: https://fluentscheduler.github.io
 [issues]:        https://github.com/fluentscheduler/FluentScheduler/issues
 [help wanted]:   https://github.com/fluentscheduler/FluentScheduler/labels/help%20wanted
+[version-5]:     https://github.com/fluentscheduler/FluentScheduler/tree/version-5
